@@ -76,6 +76,20 @@
   (if (empty? tables) '() 
       (join-two-tables (rename-attributes (first tables) (first names)) (join (rest tables) (rest names)))))
 
+(define (remove-dot input) 
+  (second (string-split input ".")))
+
+(define (contain x input) 
+  (equal? x (remove-dot input)))
+
+(define (find-answer x lst) 
+  (cond [(empty? lst) (remove-dot x)]
+        [(equal? #t (contain (remove-dot x) (first lst))) x]
+        [else (find-answer x (rest lst))]))
+
+(define (rename-attrs attrs) 
+  (foldr (lambda (attr result) (cons (find-answer attr (remove attr attrs)) result)) '() attrs))
+
 
 
 ; Part I "WHERE" helpers; you may or may not wish to implement these.
