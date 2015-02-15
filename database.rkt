@@ -77,6 +77,7 @@
       (join-two-tables (rename-attributes (first tables) (first names)) (join (rest tables) (rest names)))))
 
 
+
 ; Part I "WHERE" helpers; you may or may not wish to implement these.
 
 #|
