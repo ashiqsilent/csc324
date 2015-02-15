@@ -16,7 +16,8 @@
 ; to the provide statement.
 (provide attributes
          tuples
-         size)
+         size
+         SELECT)
 
 ; Part 0: Semantic aliases
 
@@ -56,24 +57,26 @@
 ; Implementation of join tables
 
 
-
 (define (rename-attributes table name) 
-  (cons (foldl (lambda (attr result) (cons (string-append name "." attr) result)) '() (attributes table)) (tuples table)))
-
-; Return tables as a list with their attributes renamed.
-(define (rename-attributes-in-tables tables names)
-  (if (empty? tables) '()
-      (append (list (rename-attributes (first tables) (first names))) (rename-attributes-in-tables (rest tables) (rest names)))))
-
-(define (cartesian-helper table1-tuple table2 result) 
-  (foldl (lambda (table2-tuple res) (append res (list (append table1-tuple table2-tuple)))) result table2))
+  (cons (foldr (lambda (attr result) (cons (string-append name "." attr) result)) '() (attributes table)) (tuples table)))
 
 (define (cartesian-product table1 table2) 
   (cond [(empty? table1) table2]
         [(empty? table2) table1]
-        [else (foldl (lambda (table1-tuple result) (cartesian-helper table1-tuple table2 result)) '() table1)]))
+        [else (foldl (lambda (table1-tuple result) (foldl (lambda (table2-tuple res) (append res (list (append table1-tuple table2-tuple)))) result table2)) '() table1)]))
 
-(define (join tables names) (void))
+
+; join the attributes first then find the combination of tuples in the two.
+(define (join-two-tables table1 table2) 
+  (cond [(empty? table1) table2]
+        [(empty? table2) table1]
+        [else (append (cartesian-product (list (attributes table1)) (list (attributes table2))) (cartesian-product (rest table1) (rest table2)))]))
+  
+(define (join tables names) 
+  (if (empty? tables) '() 
+      (join-two-tables (rename-attributes (first tables) (first names)) (join (rest tables) (rest names)))))
+
+
 ; Part I "WHERE" helpers; you may or may not wish to implement these.
 
 #|
@@ -110,7 +113,7 @@ A function 'replace-attr' that takes:
 ; Starter for Part 4; feel free to ignore!
 (define-syntax SELECT 
   (syntax-rules (FROM *)
-    [(SELECT <attrs> FROM [<table> <name>] ...) (join (list <table> ...) (list <name> ...))]
+    [(SELECT <attrs> FROM [<table> <name>] ...) (SELECT <attrs> FROM (join (list <table> ...) (list <name> ...)))]
     ; base case for select
     [(SELECT * FROM <table>) <table>]
     [(SELECT <attrs> FROM <table>) (select <attrs> <table>)]))
