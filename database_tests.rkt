@@ -71,16 +71,16 @@ and your TAs will appreciate it!
         ("David")))
 
 ; Select given a literal table
-(test
- (SELECT '("A" "B")
-   FROM '(("C" "A" "B" "D")
-          (1 "Hi" 5 #t)
-          (2 "Bye" 5 #f)
-          (3 "Hi" 10 #t)))
- '(("A" "B")
-   ("Hi" 5)
-   ("Bye" 5)
-   ("Hi" 10)))
+;(test
+; (SELECT '("A" "B")
+;   FROM '(("C" "A" "B" "D")
+;          (1 "Hi" 5 #t)
+;          (2 "Bye" 5 #f)
+;          (3 "Hi" 10 #t)))
+; '(("A" "B")
+;   ("Hi" 5)
+;   ("Bye" 5)
+;   ("Hi" 10)))
 
 ; Select all from two product of two tables
 (test (SELECT * FROM [Person "P"] [Teaching "T"])
@@ -90,7 +90,7 @@ and your TAs will appreciate it!
         ("David" 20 #t "David" "CSC343")
         ("Jen" 30 #t "David" "CSC324")
         ("Jen" 30 #t "Paul" "CSC108")
-        ("Jen" 30 #T "David" "CSC343")
+        ("Jen" 30 #t "David" "CSC343")
         ("Paul" 100 #f "David" "CSC324")
         ("Paul" 100 #f "Paul" "CSC108")
         ("Paul" 100 #f "David" "CSC343")))
@@ -141,7 +141,7 @@ and your TAs will appreciate it!
    (3 "Hi" 10 #t "Jen" 30 #t)
    (3 "Hi" 10 #t "Paul" 100 #f)))
 
-
+#|
 ; ---- WHERE ----
 ; Attribute as condition, select all
 (test (SELECT *
@@ -373,4 +373,4 @@ and your TAs will appreciate it!
    (1 "Hi" "Bye")
    (1 "Dog" "Cat")
    (10 "Hi" "Bye")
-   (10 "Dog" "Cat")))
+   (10 "Dog" "Cat"))) |#
