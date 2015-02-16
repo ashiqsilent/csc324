@@ -72,10 +72,14 @@
         [(empty? table2) table1]
         [else (append (cartesian-product (list (attributes table1)) (list (attributes table2))) (cartesian-product (rest table1) (rest table2)))]))
   
-(define (join tables names) 
+(define (join-helper tables names) 
   (if (empty? tables) '() 
-      (join-two-tables (rename-attributes (first tables) (first names)) (join (rest tables) (rest names)))))
+      (join-two-tables (rename-attributes (first tables) (first names)) (join-helper (rest tables) (rest names)))))
 
+(define (join tables names) 
+  (rename-attrs (join-helper tables names)))
+
+;; tiny improvement on the naming of attributes
 (define (remove-dot input) 
   (second (string-split input ".")))
 
@@ -87,10 +91,11 @@
         [(equal? #t (contain (remove-dot x) (first lst))) x]
         [else (find-answer x (rest lst))]))
 
-(define (rename-attrs attrs) 
+(define (rename-attrs-helper attrs) 
   (foldr (lambda (attr result) (cons (find-answer attr (remove attr attrs)) result)) '() attrs))
 
-
+(define (rename-attrs table)
+  (cons (rename-attrs-helper (first table)) (rest table)))
 
 ; Part I "WHERE" helpers; you may or may not wish to implement these.
 
